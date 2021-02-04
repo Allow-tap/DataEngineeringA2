@@ -16,11 +16,10 @@ public class WordCount {
             String line = value.toString();
             StringTokenizer tokenizer = new StringTokenizer(line);
             while (tokenizer.hasMoreTokens()) {
-                String token = tokenizer.nextToken();
-							if (token.startsWith("c") || token.startsWith("C")){
-								word.set("C counter");
-                context.write(word, one);
-							}
+                Text charKey = new Text(SingleChar);
+                output.collect(charKey, one);
+                word.set(tokenizer.nextToken());
+                
             }
         }
     }
