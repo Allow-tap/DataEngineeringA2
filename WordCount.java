@@ -1,4 +1,3 @@
-//package org.myorg;
 import java.io.IOException;
 import java.util.*;
 import org.apache.hadoop.fs.Path;
@@ -11,18 +10,21 @@ public class WordCount {
     public static class Map extends MapReduceBase implements Mapper<LongWritable, Text, Text, IntWritable> {
         private final static IntWritable one = new IntWritable(1);
         private Text word = new Text();
-	    
+
         public void map(LongWritable key, Text value, OutputCollector<Text, IntWritable> output, Reporter reporter) throws IOException {
-            String line = value.toString();
-            StringTokenizer tokenizer = new StringTokenizer(line);
+	String line = value.toString().replaceAll("[^a-zA-Z ]","");
+	line = line.toLowerCase();
+	StringTokenizer tokenizer = new StringTokenizer(line);
+	//String line = value.toString().replaceA;
+	//StringTokenizer tokenizer = new StringTokenizer(line);
             while (tokenizer.hasMoreTokens()) {
-                word.set(tokenizer.nextToken().charAt(0));
-		output.collect(charKey, one);
-                
+                word.set(String.valueOf(tokenizer.nextToken().charAt(0)));
+               // word.set(tokenizer.nextToken());
+                output.collect(word, one);
             }
         }
     }
-	
+
     public static class Reduce extends MapReduceBase implements Reducer<Text, IntWritable, Text, IntWritable> {
         public void reduce(Text key, Iterator<IntWritable> values, OutputCollector<Text, IntWritable> output, Reporter reporter) throws IOException {
             int sum = 0;
@@ -32,23 +34,23 @@ public class WordCount {
             output.collect(key, new IntWritable(sum));
         }
     }
-	
+
     public static void main(String[] args) throws Exception {
         JobConf conf = new JobConf(WordCount.class);
         conf.setJobName("wordcount");
-	    
+
         conf.setOutputKeyClass(Text.class);
         conf.setOutputValueClass(IntWritable.class);
-	    
+
         conf.setMapperClass(Map.class);
         conf.setReducerClass(Reduce.class);
-	    
+
         conf.setInputFormat(TextInputFormat.class);
         conf.setOutputFormat(TextOutputFormat.class);
-	    
+
         FileInputFormat.setInputPaths(conf, new Path(args[0]));
         FileOutputFormat.setOutputPath(conf, new Path(args[1]));
-	    
+
         JobClient.runJob(conf);
     }
 }
