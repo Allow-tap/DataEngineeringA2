@@ -14,9 +14,10 @@ public class WordCount {
         public void map(LongWritable key, Text value, OutputCollector<Text, IntWritable> output, Reporter reporter) throws IOException {
 	String line = value.toString().replaceAll("[^a-zA-Z ]","");
 	line = line.toLowerCase();
-	StringTokenizer tokenizer = new StringTokenizer(line);
-	//String line = value.toString().replaceA;
 	//StringTokenizer tokenizer = new StringTokenizer(line);
+	//String line = value.toString();
+	//line = line.toLowerCase();
+	StringTokenizer tokenizer = new StringTokenizer(line);
             while (tokenizer.hasMoreTokens()) {
                 word.set(String.valueOf(tokenizer.nextToken().charAt(0)));
                // word.set(tokenizer.nextToken());
