@@ -16,11 +16,11 @@ public class WordCount {
             String line = value.toString();
             StringTokenizer tokenizer = new StringTokenizer(line);
             while (tokenizer.hasMoreTokens()) {
-                
-		if (tokenizer.startsWith("c") || tokeninzer.startsWith("C")){
-		word.set(tokenizer.nextToken());
-                output.collect(word, one);
-		}
+                String token = tokenizer.nextToken();
+							if (token.startsWith("c") || token.startsWith("C")){
+								word.set("C counter");
+                context.write(word, one);
+							}
             }
         }
     }
@@ -28,10 +28,10 @@ public class WordCount {
     public static class Reduce extends MapReduceBase implements Reducer<Text, IntWritable, Text, IntWritable> {
         public void reduce(Text key, Iterator<IntWritable> values, OutputCollector<Text, IntWritable> output, Reporter reporter) throws IOException {
             int sum = 0;
-            while (values.hasNext()) {
-                sum += values.next().get();
+            for (IntWritable val : values) {
+                sum += val.get();
             }
-            output.collect(key, new IntWritable(sum));
+            context.write(key, new IntWritable(sum));
         }
     }
 	
