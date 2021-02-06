@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+"""mapper.py"""
 import io
 import sys
 import string
